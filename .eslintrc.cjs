@@ -1,7 +1,6 @@
 const { resolve } = require('node:path')
 
 const projectClient = resolve(__dirname, 'client/tsconfig.json')
-const projectServer = resolve(__dirname, 'server/tsconfig.json')
 
 module.exports = {
   root: true,
@@ -14,7 +13,7 @@ module.exports = {
   settings: {
     'import/resolver': {
       typescript: {
-        project: [projectClient, projectServer]
+        project: [projectClient]
       }
     }
   },
@@ -115,19 +114,6 @@ module.exports = {
             reservedFirst: true
           }
         ]
-      }
-    },
-    {
-      files: ['server/**/*.{ts,tsx}'],
-      extends: [require.resolve('@vercel/style-guide/eslint/typescript')],
-      parserOptions: {
-        project: projectServer
-      },
-      rules: {
-        '@typescript-eslint/interface-name-prefix': 'off',
-        '@typescript-eslint/explicit-function-return-type': 'off',
-        '@typescript-eslint/explicit-module-boundary-types': 'off',
-        '@typescript-eslint/no-explicit-any': 'off'
       }
     }
   ]

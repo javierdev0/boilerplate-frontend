@@ -17,8 +17,6 @@ jobs:
           LABELS=(
             '{"name":"completo","color":"0E8A16","description":"Etiqueta para indicar que una tarea está completa"}'
             '{"name":"incompleto","color":"B60205","description":"Etiqueta para indicar que una tarea está incompleta"}'
-            '{"name":"criterios de aceptación","color":"0A04DB","description":"Etiqueta para criterios de aceptación de una tarea"}'
-            '{"name":"ajustes sin tarea","color":"29BFFA","description":"Etiqueta para ajustes sin tarea asignada"}'
           )
 
           # Bucle para crear cada etiqueta
