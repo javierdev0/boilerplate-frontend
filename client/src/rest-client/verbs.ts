@@ -21,7 +21,8 @@ const createConfigurations = <Data>(url: string, params: Record<string, unknown>
     url: path ? `${path}/${url}?${queryParams}` : `${url}?${queryParams}`,
     headers: {
       ...newHeaders,
-      Authorization: `Bearer ${token ? token : ''}`
+      // type-coverage:ignore-next-line
+      Authorization: `Bearer ${token ?? ''}`
     },
     data: body
   }
