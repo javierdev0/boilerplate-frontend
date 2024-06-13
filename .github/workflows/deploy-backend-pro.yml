@@ -1,0 +1,59 @@
+name: Deploy production environment to AWS Lambda
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20
+
+    - name: Install Dependencies
+      run: npm install
+      working-directory: ./server
+
+    - name: Build
+      run: npm run build:server
+
+    - name: Deploy to AWS Lambda (production)
+      run: npm run deploy:prod:server
+      env:
+        ENV: ${{ secrets.ENV_PRO }}
+        DB_HOST: ${{ secrets.DB_HOST }}
+        DB_PORT: ${{ secrets.DB_PORT }}
+        DB_USERNAME: ${{ secrets.DB_USERNAME }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        DB_NAME: ${{ secrets.DB_NAME_PRO }}
+        SSL_REJECT_UNAUTHORIZED: ${{ secrets.SSL_REJECT_UNAUTHORIZED }}
+        AUTO_LOAD_ENTITIES: ${{ secrets.AUTO_LOAD_ENTITIES_PRO }}
+        SYNCHRONIZE: ${{ secrets.SYNCHRONIZE_PRO }}
+        DEFAULT_LIMIT: ${{ secrets.DEFAULT_LIMIT }}
+        REGION: ${{ secrets.REGION }}
+        AWS_ACCESS_KEY_ID : ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY : ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        USER_POOL_ID: ${{ secrets.USER_POOL_ID_PRO }}
+        USER_POOL_WEB_CLIENT_ID: ${{ secrets.USER_POOL_WEB_CLIENT_ID_PRO }}
+        AUTH_IDENTITY: ${{ secrets.AUTH_IDENTITY_PRO }}
+        COGNITO_IDENTITY_POOL: ${{ secrets.COGNITO_IDENTITY_POOL_PRO }}
+        MAIL_FROM: ${{ secrets.MAIL_FROM }}
+        MAIL_HOST: ${{ secrets.MAIL_HOST }}
+        MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+        MAIL_USER: ${{ secrets.MAIL_USER }}
+        S3_BUCKET_NAME : ${{ secrets.S3_BUCKET_NAME_PRO }}
+        RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
+        HANDLE_SCHEDULED_TASK_API_DESTINATION_ARN: ${{ secrets.HANDLE_SCHEDULED_TASK_API_DESTINATION_ARN_PRO }}
+        EVENT_BRIDGE_ROLE_ARN: ${{ secrets.EVENT_BRIDGE_ROLE_ARN_PRO }}
+        AWS_ACCESS_KEY_ID_EVENT_BRIDGE: ${{ secrets.AWS_ACCESS_KEY_ID_EVENT_BRIDGE }}
+        AWS_SECRET_ACCESS_KEY_EVENT_BRIDGE: ${{ secrets.AWS_SECRET_ACCESS_KEY_EVENT_BRIDGE }}
+

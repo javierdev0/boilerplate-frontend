@@ -1,0 +1,39 @@
+name: Branch name validation
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+    branches:
+      - '*'
+
+jobs:
+  validate-branch:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Validate branch name
+      run: |
+        branch_name=$(echo $GITHUB_HEAD_REF)
+        echo "Validating branch name: $branch_name"
+        
+        # Omitir la validación si el nombre de la rama es "release" o "develop"
+        if [[ $branch_name == "release" || $branch_name == "develop" ]]; then
+          exit 0  # Salir con éxito (sin errores)
+        fi
+
+        # Resto de la validación
+        if [[ ! $branch_name =~ ^(feature|fix|refactor|update|chore|docs)\(backend|frontend\)/.*$ ]]; then
+          curl -X POST -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments" \
+            -d '{"body": "# Error\n#### El nombre de la rama no cumple con el estándar de nomenclatura.\nDebes seguir el formato: `<prefijo>(frontend|backend)/<nombre>` con prefijos permitidos: `feature`, `fix`, `refactor`, `update`, `chore`, `docs`, seguido de una descripción de la tarea después de la barra.\n\n### Ejemplos\n- `feature(backend)/creacion-de-usuarios`\n- `fix(frontend)/bug-fix`\n\n### Más información [aquí](https://github.com/Brace-Developers/nefroproteccion/blob/develop/GITHUB.md)"}'
+          
+          exit 1
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
