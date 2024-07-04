@@ -1,18 +1,24 @@
-import config from './config.env.js'
+let nextConfig = {}
 
-const ENV_VARIABLES = process.env.NODE_ENV !== 'production' ? config : {}
+if (process.env.NODE_ENV === 'production') {
+  configure()
+} else {
+  import('./config.env.js').then((config) => configure(config)).catch((err) => console.error(`Error al configurar variables de entorno: ${err}`))
+}
 
-const nextConfig = {
-  env: {
-    ...ENV_VARIABLES
-  },
-  reactStrictMode: false,
-  compiler: {
-    ...(process.env.NODE_ENV === 'production' && {
-      removeConsole: {
-        exclude: ['error']
-      }
-    })
+function configure(envVariables) {
+  nextConfig = {
+    env: {
+      ...envVariables
+    },
+    reactStrictMode: false,
+    compiler: {
+      ...(process.env.NODE_ENV === 'production' && {
+        removeConsole: {
+          exclude: ['error']
+        }
+      })
+    }
   }
 }
 
